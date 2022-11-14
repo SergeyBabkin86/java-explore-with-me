@@ -33,8 +33,8 @@ public class PrivateApiController {
     }
 
     @PatchMapping(value = "/{userId}/events")
-    public EventFullDto updateByUser (@PathVariable @Positive long userId,
-                                      @Valid @RequestBody UpdateEventRequest updateEventRequest) {
+    public EventFullDto updateByUser(@PathVariable @Positive long userId,
+                                     @Valid @RequestBody UpdateEventRequest updateEventRequest) {
         return eventService.updateByUser(userId, updateEventRequest);
     }
 
@@ -46,21 +46,21 @@ public class PrivateApiController {
     }
 
     @GetMapping(value = "/{userId}/events/{eventId}")
-    public EventFullDto findByIdAndInitiatorId (@PathVariable @Positive long userId,
-                                                @PathVariable @Positive long eventId) {
+    public EventFullDto findByIdAndInitiatorId(@PathVariable @Positive long userId,
+                                               @PathVariable @Positive long eventId) {
         return eventService.findByIdAndInitiatorId(userId, eventId);
     }
 
     @PatchMapping(value = "/{userId}/events/{eventId}")
-    public EventFullDto cancelByInitiator (@PathVariable @Positive long userId,
-                                           @PathVariable @Positive long eventId) {
+    public EventFullDto cancelByInitiator(@PathVariable @Positive long userId,
+                                          @PathVariable @Positive long eventId) {
         return eventService.cancelByInitiator(userId, eventId);
     }
 
     // ЗАПРОСЫ НА УЧАСТИЕ
 
     @GetMapping(value = "/{userId}/requests")
-    public Collection<ParticipationRequestDto> findByIdAndInitiatorId (@PathVariable @Positive long userId) {
+    public Collection<ParticipationRequestDto> findByIdAndInitiatorId(@PathVariable @Positive long userId) {
         return participationRequestService.findAllByRequesterId(userId);
     }
 
@@ -70,7 +70,7 @@ public class PrivateApiController {
         return participationRequestService.save(userId, eventId);
     }
 
-    @PatchMapping (value = "/{userId}/requests/{requestId}/cancel")
+    @PatchMapping(value = "/{userId}/requests/{requestId}/cancel")
     public ParticipationRequestDto cancelParticipationRequest(@PathVariable @Positive long userId,
                                                               @PathVariable @Positive long requestId) {
         return participationRequestService.cancel(userId, requestId);

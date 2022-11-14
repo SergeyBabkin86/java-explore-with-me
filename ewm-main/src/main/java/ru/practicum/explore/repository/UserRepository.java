@@ -10,6 +10,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User u where u.id in ?1")
-    List<User> findAllByIdIn (Iterable <Long> ids, PageRequest pageRequest);
+    List<User> findAllByIdIn(Iterable<Long> ids, PageRequest pageRequest);
 
 }

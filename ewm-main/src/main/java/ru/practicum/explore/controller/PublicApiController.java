@@ -16,7 +16,7 @@ import java.util.Collection;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 @Validated
-public class CategoryController {
+public class PublicApiController {
 
     private final CategoryService categoryService;
 

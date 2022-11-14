@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
 
     @Query("select p from ParticipationRequest p where p.requester.id = ?1")
-    Collection<ParticipationRequest> findAllByRequesterId (Long requesterId);
+    Collection<ParticipationRequest> findAllByRequesterId(Long requesterId);
 
     @Query("select count(p) from ParticipationRequest p where p.requester.id = ?1 and p.event.id = ?2")
     int countAllByRequesterIdAndEventId(Long requesterId, Long eventId);

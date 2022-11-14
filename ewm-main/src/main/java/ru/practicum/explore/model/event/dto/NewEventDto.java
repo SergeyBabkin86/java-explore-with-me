@@ -22,7 +22,7 @@ public class NewEventDto {
     @Size(min = 20, max = 7000, message = "Event description size should be between 20 and 7000 characters.")
     String description;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Future(message = "Event date shouldn't be in the future.")
     LocalDateTime eventDate;
 

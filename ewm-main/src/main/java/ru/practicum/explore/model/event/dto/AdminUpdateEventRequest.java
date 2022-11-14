@@ -14,7 +14,7 @@ public class AdminUpdateEventRequest {
 
     String annotation;
 
-    Integer category_id;
+    Integer categoryId;
 
     String description;
 

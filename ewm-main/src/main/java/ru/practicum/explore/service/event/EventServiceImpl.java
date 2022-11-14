@@ -109,7 +109,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto findByIdAndInitiatorId(Long userId, Long eventId) {
         var event = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        if (event ==null) {
+        if (event == null) {
             throw new EntityNotFoundException(format("Event with id=%s was not found.", eventId));
         }
 
@@ -119,7 +119,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto cancelByInitiator(Long userId, Long eventId) {
         var event = eventRepository.findByIdAndInitiatorId(eventId, userId);
-        if (event ==null) {
+        if (event == null) {
             throw new EntityNotFoundException(format("Event with id=%s was not found.", eventId));
         }
 
@@ -159,10 +159,6 @@ public class EventServiceImpl implements EventService {
                     "cannot be earlier than two hours from the current moment.");
         }
     }
-
-
-
-
 
 
 }

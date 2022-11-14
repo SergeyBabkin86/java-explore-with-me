@@ -42,7 +42,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         var requester = checkUserExists(requesterId, userRepository);
         var event = checkEventExists(eventId, eventRepository);
 
-        if (participationRequestRepository.countAllByRequesterIdAndEventId(requesterId, eventId) !=0) {
+        if (participationRequestRepository.countAllByRequesterIdAndEventId(requesterId, eventId) != 0) {
             throw new RuntimeException("Repeat participation request is prohibited.");
         }
 
@@ -54,7 +54,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             throw new RuntimeException("It is impossible to take a part in unpublished event.");
         }
 
-        if (event.getParticipantLimit()<=event.getConfirmedRequests()) {
+        if (event.getParticipantLimit() <= event.getConfirmedRequests()) {
             throw new RuntimeException("Participant limit is achieved. It is impossible to take a part in the event.");
         }
 
@@ -67,7 +67,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         if (!event.getRequestModeration()) {
             participationRequest.setStatus(RequestStatus.APPROVED);
-            event.setConfirmedRequests(event.getConfirmedRequests()+1);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.save(event);
         }
         return toParticipationRequestDto(participationRequestRepository.save(participationRequest));
@@ -80,7 +80,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 participationRequestId);
         var event = checkEventExists(participationRequest.getEvent().getId(), eventRepository);
 
-        if (participationRequestId==null) {
+        if (participationRequestId == null) {
             throw new EntityNotFoundException(format("Participation request with id=%s was not found, or " +
                             "created by another requester (not requester with id=%s)",
                     participationRequestId,
@@ -89,7 +89,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         participationRequest.setStatus(RequestStatus.CANCELED);
 
         if (participationRequest.getStatus().equals(RequestStatus.APPROVED)) {
-            event.setConfirmedRequests(event.getConfirmedRequests()-1);
+            event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventRepository.save(event);
         }
 
@@ -97,37 +97,4 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
         return toParticipationRequestDto(participationRequest);
     }
-
-
-    /* public UserDto save(NewUserRequest newUserRequest) {
-        var user = userRepository.save(toUser(newUserRequest));
-        return toUserDto(user);
-    } */
-
-
-    /* public void deleteById(Long userId) {
-        checkUserExists(userId, userRepository);
-        userRepository.deleteById(userId);
-    }
-
-
-    public Collection<UserDto> findAll(Long[] ids, int from, int size) {
-        var pageRequest = PageRequest.of(from / size, size);
-        var idsList = Arrays.asList(ids);
-
-        if (idsList.isEmpty()) {
-            return userRepository.findAll(pageRequest).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
-        } else if (idsList.size() == 1) {
-            checkUserExists(idsList.get(0), userRepository);
-            return userRepository.findById(idsList.get(0)).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
-        } else {
-            return userRepository.findAllByIdIn(idsList, pageRequest).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
-        }
-    } */
 }

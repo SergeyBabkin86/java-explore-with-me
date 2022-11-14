@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name="requests")
+@Table(name = "requests")
 public class ParticipationRequest {
 
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

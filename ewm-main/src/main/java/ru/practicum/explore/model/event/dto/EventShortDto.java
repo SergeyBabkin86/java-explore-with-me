@@ -18,7 +18,7 @@ public class EventShortDto {
 
     Integer confirmedRequests;
 
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
 
     User initiator;

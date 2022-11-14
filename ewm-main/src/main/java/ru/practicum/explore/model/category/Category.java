@@ -1,4 +1,5 @@
 package ru.practicum.explore.model.category;
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -8,11 +9,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table (name="categories")
+@Table(name = "categories")
 public class Category {
 
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

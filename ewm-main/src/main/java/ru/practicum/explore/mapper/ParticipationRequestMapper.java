@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 public class ParticipationRequestMapper {
 
-    public static ParticipationRequest toParticipationRequest (ParticipationRequestDto participationRequestDto,
-                                                               Event event,
-                                                               User requester) {
+    public static ParticipationRequest toParticipationRequest(ParticipationRequestDto participationRequestDto,
+                                                              Event event,
+                                                              User requester) {
         return ParticipationRequest.builder()
                 .id(null)
                 .created(LocalDateTime.now())
@@ -22,7 +22,7 @@ public class ParticipationRequestMapper {
                 .build();
     }
 
-    public static ParticipationRequestDto toParticipationRequestDto (ParticipationRequest participationRequest) {
+    public static ParticipationRequestDto toParticipationRequestDto(ParticipationRequest participationRequest) {
         return new ParticipationRequestDto(participationRequest.getId(),
                 participationRequest.getCreated(),
                 participationRequest.getEvent().getId(),

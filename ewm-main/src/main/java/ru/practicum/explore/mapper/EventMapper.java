@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class EventMapper {
 
-    public static Event toEvent (NewEventDto newEventDto, Category category, User user) {
+    public static Event toEvent(NewEventDto newEventDto, Category category, User user) {
 
         return Event.builder()
                 .annotation(newEventDto.getAnnotation())
@@ -52,7 +52,7 @@ public class EventMapper {
                 event.getViews());
     }
 
-    public static EventShortDto toEventShortDto (Event event) {
+    public static EventShortDto toEventShortDto(Event event) {
         return new EventShortDto(event.getId(),
                 event.getAnnotation(),
                 event.getCategory(),
