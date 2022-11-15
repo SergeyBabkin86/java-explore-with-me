@@ -9,6 +9,7 @@ services:
     depends_on:
     - stats-db
     environment:
+      - EWM_SERVICE_URL=http://ewm-service:8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewm-stat
 
   stats-db:
@@ -20,8 +21,8 @@ services:
         - /var/lib/postgresql/data/
     environment:
         - POSTGRES_DB=ewm-stat
-        - POSTGRES_USER=Explorer
-        - POSTGRES_PASSWORD=Explorer
+        - POSTGRES_USER=explorer
+        - POSTGRES_PASSWORD=explorer
 
   ewm-service:
     build: ewm-main/
@@ -31,6 +32,7 @@ services:
       - "8080:8080"
     depends_on:
       - ewm-db
+      - stats-server
     environment:
       - ewm-stat.url=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/explore-with-me
@@ -44,5 +46,5 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=explore-with-me
-      - POSTGRES_USER=Explorer
-      - POSTGRES_PASSWORD=Explorer
+      - POSTGRES_USER=explorer
+      - POSTGRES_PASSWORD=explorer
