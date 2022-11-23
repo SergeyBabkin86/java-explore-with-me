@@ -54,7 +54,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             throw new RuntimeException("It is impossible to take a part in unpublished event.");
         }
 
-        if (event.getParticipantLimit() <= event.getConfirmedRequests()) {
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new RuntimeException("Participant limit is achieved. It is impossible to take a part in the event.");
         }
 
@@ -66,7 +66,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
                 .build();
 
         if (!event.getRequestModeration()) {
-            participationRequest.setStatus(RequestStatus.APPROVED);
+            participationRequest.setStatus(RequestStatus.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.save(event);
         }
@@ -88,7 +88,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
         }
         participationRequest.setStatus(RequestStatus.CANCELED);
 
-        if (participationRequest.getStatus().equals(RequestStatus.APPROVED)) {
+        if (participationRequest.getStatus().equals(RequestStatus.CONFIRMED)) {
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventRepository.save(event);
         }

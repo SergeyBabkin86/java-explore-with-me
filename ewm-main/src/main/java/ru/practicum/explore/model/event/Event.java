@@ -3,10 +3,12 @@ package ru.practicum.explore.model.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.explore.model.category.Category;
+import ru.practicum.explore.model.compilation.Compilation;
 import ru.practicum.explore.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -36,20 +38,22 @@ public class Event {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
 
-    @ManyToOne
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
+    @Column(name = "lat", nullable = false)
+    private Double lat;
 
-    @JoinColumn(name = "paid", nullable = false)
+    @Column(name = "lon", nullable = false)
+    private Double lon;
+
+    @Column(name = "paid", nullable = false)
     private Boolean paid;
 
-    @JoinColumn(name = "participant_limit", nullable = false)
+    @Column(name = "participant_limit", nullable = false)
     private Integer participantLimit;
 
-    @JoinColumn(name = "request_moderation", nullable = false)
+    @Column(name = "request_moderation", nullable = false)
     private Boolean requestModeration;
 
-    @JoinColumn(name = "title", nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "confirmed_requests")
@@ -62,12 +66,17 @@ public class Event {
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
 
-    @JoinColumn(name = "published_on")
+    @Column(name = "published_on")
     private LocalDateTime publishedOn;
 
     @Enumerated(EnumType.STRING)
     private EventState state;
 
-    @JoinColumn(name = "views")
+    @Column(name = "views")
     private Integer views;
+
+    @ManyToMany(mappedBy = "events")
+    @ToString.Exclude
+    private Collection<Compilation> compilations;
+
 }

@@ -7,7 +7,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Value
-//@NoArgsConstructor(force = true)
 public class CategoryDto {
 
     @NotNull(message = "Category id should not be null.")

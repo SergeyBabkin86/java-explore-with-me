@@ -15,5 +15,9 @@ public interface ParticipationRequestRepository extends JpaRepository<Participat
     int countAllByRequesterIdAndEventId(Long requesterId, Long eventId);
 
     @Query("select p from ParticipationRequest p where p.requester.id = ?1 and p.id = ?2")
+        //TODO DEL
     ParticipationRequest findByRequesterIdAndId(Long requesterId, Long participationRequestId);
+
+    @Query("select p from ParticipationRequest p where p.event.id = ?1")
+    Collection<ParticipationRequest> findAllByEventId(Long eventId);
 }

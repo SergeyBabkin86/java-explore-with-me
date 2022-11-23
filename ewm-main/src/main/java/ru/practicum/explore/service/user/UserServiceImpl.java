@@ -8,8 +8,8 @@ import ru.practicum.explore.model.user.dto.NewUserRequest;
 import ru.practicum.explore.model.user.dto.UserDto;
 import ru.practicum.explore.repository.UserRepository;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.explore.mapper.UserMapper.toUser;
@@ -35,21 +35,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Collection<UserDto> findAll(Long[] ids, int from, int size) {
+    public Collection<UserDto> getUsersById(List<Long> ids, int from, int size) {
         var pageRequest = PageRequest.of(from / size, size);
-        var idsList = Arrays.asList(ids);
 
-        if (idsList.isEmpty()) {
+        if (ids.isEmpty()) {
             return userRepository.findAll(pageRequest).stream()
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
-        } else if (idsList.size() == 1) {
-            checkUserExists(idsList.get(0), userRepository);
-            return userRepository.findById(idsList.get(0)).stream()
-                    .map(UserMapper::toUserDto)
-                    .collect(Collectors.toList());
         } else {
-            return userRepository.findAllByIdIn(idsList, pageRequest).stream()
+            return userRepository.findUsersByIdIn(ids, pageRequest).stream()
                     .map(UserMapper::toUserDto)
                     .collect(Collectors.toList());
         }

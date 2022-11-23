@@ -11,13 +11,6 @@ CREATE TABLE IF NOT EXISTS users
     email VARCHAR UNIQUE                                  NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS locations
-(
-    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-    latitude  DOUBLE PRECISION,
-    longitude DOUBLE PRECISION
-);
-
 CREATE TABLE IF NOT EXISTS events
 (
     id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
@@ -25,7 +18,8 @@ CREATE TABLE IF NOT EXISTS events
     category_id        BIGINT REFERENCES categories (id),
     description        VARCHAR(7000)                                   NOT NULL,
     event_date         TIMESTAMP WITHOUT TIME ZONE                     NOT NULL,
-    location_id        BIGINT REFERENCES locations (id),
+    lat                REAL                                            NOT NULL,
+    lon                REAL                                            NOT NULL,
     paid               BOOLEAN                                         NOT NULL,
     participant_limit  INTEGER                                         NOT NULL,
     request_moderation BOOLEAN                                         NOT NULL,

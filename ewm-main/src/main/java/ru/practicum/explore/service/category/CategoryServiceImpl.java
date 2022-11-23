@@ -54,7 +54,9 @@ public class CategoryServiceImpl implements CategoryService {
         var page = from / size;
         var pageRequest = PageRequest.of(page, size);
 
-        return categoryRepository.findAll(pageRequest).stream().map(CategoryMapper::toCategoryDto).collect(Collectors.toList());
+        return categoryRepository.findAll(pageRequest).stream()
+                .map(CategoryMapper::toCategoryDto)
+                .collect(Collectors.toList());
     }
 
     @Override

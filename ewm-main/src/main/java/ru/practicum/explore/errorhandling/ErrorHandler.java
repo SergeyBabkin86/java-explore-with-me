@@ -24,6 +24,20 @@ public class ErrorHandler {
 
     @ExceptionHandler()
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleThrowable(final java.lang.IllegalArgumentException e) {
+        log.debug("400 {}", e.getMessage(), e);
+
+        return ErrorResponse.builder()
+                .errors(getStackTraceStrings(e))
+                .message(e.getMessage())
+                .reason(e.getCause().toString())
+                .status(HttpStatus.BAD_REQUEST)
+                .timestamp(getFormattedTimestamp())
+                .build();
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleThrowable(final MethodArgumentNotValidException e) {
         log.debug("400 {}", e.getMessage(), e);
 
@@ -102,7 +116,7 @@ public class ErrorHandler {
                 .message(e.getMessage())
                 .reason("Error occurred.")
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .timestamp(getFormattedTimestamp())
                 .build();
     }
 

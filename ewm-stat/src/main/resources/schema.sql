@@ -1,8 +1,8 @@
-CREATE TABLE IF NOT EXISTS stat
+CREATE TABLE IF NOT EXISTS endpoint_hits
 (
-    id        BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
-    app       VARCHAR(255)                                    NOT NULL,
-    uri       VARCHAR(512)                                    NOT NULL,
-    ip        VARCHAR(512)                                    NOT NULL,
-    timestamp TIMESTAMP WITHOUT TIME ZONE                     NOT NULL
+    id      BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY NOT NULL,
+    app     VARCHAR(255),
+    uri     VARCHAR(512),
+    ip      VARCHAR(512),
+    created TIMESTAMP WITHOUT TIME ZONE
 );

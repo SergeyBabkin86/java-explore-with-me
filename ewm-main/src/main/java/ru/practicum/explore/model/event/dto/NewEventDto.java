@@ -26,7 +26,7 @@ public class NewEventDto {
     @Future(message = "Event date shouldn't be in the future.")
     LocalDateTime eventDate;
 
-    @NotNull(message = "Event date should be in future.")
+    @NotNull(message = "Location shouldn't be null.")
     Location location;
 
     @NotNull(message = "Paid status shouldn't be null.")

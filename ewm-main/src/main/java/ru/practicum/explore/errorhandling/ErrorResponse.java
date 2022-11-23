@@ -9,9 +9,9 @@ import java.util.List;
 @Value
 @Builder
 public class ErrorResponse {
-    List<String> errors;
     String message;
     String reason;
     HttpStatus status;
     String timestamp;
+    List<String> errors;
 }
