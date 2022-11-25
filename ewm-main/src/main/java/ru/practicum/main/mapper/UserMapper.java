@@ -8,11 +8,10 @@ import ru.practicum.main.model.user.dto.UserShortDto;
 public class UserMapper {
 
     public static User toUser(NewUserRequest newUserRequest) {
-        User.builder()
+        return User.builder()
                 .name(newUserRequest.getName())
                 .email(newUserRequest.getEmail())
                 .build();
-        return new User(null, newUserRequest.getName(), newUserRequest.getEmail());
     }
 
     public static UserDto toUserDto(User user) {
