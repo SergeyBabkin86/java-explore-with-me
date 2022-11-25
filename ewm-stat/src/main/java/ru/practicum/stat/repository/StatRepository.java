@@ -2,6 +2,7 @@ package ru.practicum.stat.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ru.practicum.stat.model.EndpointHit;
 
 import java.time.LocalDateTime;
@@ -9,27 +10,16 @@ import java.util.List;
 
 public interface StatRepository extends JpaRepository<EndpointHit, Long> {
 
-    /* @Query("select e from EndpointHit e where e.created between ?1 and ?2 and e.uri in ?3")
-    Collection<EndpointHit> findAllByCreatedBetweenAndUriIn(LocalDateTime start,
-                                                            LocalDateTime end,
-                                                            List<String> uris); */
+    @Query(value = "SELECT eh.app, eh.uri, COUNT (DISTINCT eh.ip) AS hits FROM EndpointHit AS eh " +
+            "WHERE eh.uri IN (:uris) AND eh.timestamp>:start AND eh.timestamp<:end  GROUP BY eh.app, eh.uri")
+    List<Object[]> getEndpointHitsUnique(@Param("start") LocalDateTime start,
+                                         @Param("end") LocalDateTime end,
+                                         @Param("uris") List<String> uris);
 
-
-    @Query(value = "select app, uri, count(distinct ip) hits " +
-            " from endpoint_hits " +
-            " where created between ?1 and ?2" +
-            "       and uri in ?3" +
-            " group by app, uri", nativeQuery = true)
-    List<Object[]> getEndpointHitsUnique(LocalDateTime start, LocalDateTime end,
-                                         List<String> uris);
-
-    @Query(value = "select app, uri, count(ip) hits " +
-            " from endpoint_hits " +
-            " where created between ?1 and ?2" +
-            "       and uri in ?3" +
-            " group by app, uri",
-            nativeQuery = true)
-    List<Object[]> getEndpointHitsNotUnique(LocalDateTime startFormatted, LocalDateTime endFormatted,
-                                            List<String> uris);
+    @Query("SELECT eh.app, eh.uri, count(eh.ip) AS hits FROM EndpointHit AS eh" +
+            " WHERE eh.uri IN (:uris) AND eh.timestamp BETWEEN :start AND :end GROUP BY eh.app, eh.uri")
+    List<Object[]> getEndpointHitsNotUnique(@Param("start") LocalDateTime start,
+                                            @Param("end") LocalDateTime endFormatted,
+                                            @Param("uris") List<String> uris);
 }
 

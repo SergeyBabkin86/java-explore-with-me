@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.stat.model.dto.EndpointHitDto;
-import ru.practicum.stat.model.dto.ViewStatsDto;
+import ru.practicum.stat.model.dto.ViewStats;
 import ru.practicum.stat.service.StatService;
 
 import javax.validation.Valid;
@@ -28,14 +28,12 @@ public class StatController {
     }
 
     @GetMapping("/stats")
-    public Collection<ViewStatsDto> getEndpointHits(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                    @RequestParam LocalDateTime start,
-                                                    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                                    @RequestParam LocalDateTime end,
-                                                    @RequestParam List<String> uris,
-                                                    @RequestParam(defaultValue = "false") Boolean unique) {
-        System.out.println(end + " - " + start);
-
+    public Collection<ViewStats> getEndpointHits(@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                 @RequestParam(required = false) LocalDateTime start,
+                                                 @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                 @RequestParam(required = false) LocalDateTime end,
+                                                 @RequestParam(required = false) List<String> uris,
+                                                 @RequestParam(defaultValue = "false") Boolean unique) {
         return statService.getEndpointHits(start, end, uris, unique);
     }
 
