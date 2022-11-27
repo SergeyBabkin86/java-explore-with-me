@@ -10,6 +10,7 @@ import ru.practicum.main.repository.CompilationRepository;
 import ru.practicum.main.repository.EventRepository;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import static ru.practicum.main.mapper.CompilationMapper.*;
 import static ru.practicum.main.utilities.Checker.checkCompilationExists;
@@ -24,8 +25,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     @Override
-    public Collection<CompilationDto> findAll(Boolean pinned, int from, int size) {
-        var pageRequest = PageRequest.of(from / size, size);
+    public Collection<CompilationDto> findAll(Boolean pinned, PageRequest pageRequest) {
         var compilations = compilationRepository.findAllByPinned(pinned, pageRequest);
         return compilationDtoCollection(compilations);
     }
@@ -41,14 +41,13 @@ public class CompilationServiceImpl implements CompilationService {
         var compilation = compilationRepository.save(toCompilation(newCompilationDto));
         var events = eventRepository.findAllByIdIn(newCompilationDto.getEvents());
 
-        compilation.setEvents(events);
+        compilation.setEvents(new HashSet<>(events));
         compilationRepository.save(compilation);
         return toCompilationDto(compilation);
     }
 
     @Override
     public void deleteById(Long compId) {
-        checkCompilationExists(compId, compilationRepository);
         compilationRepository.deleteById(compId);
     }
 

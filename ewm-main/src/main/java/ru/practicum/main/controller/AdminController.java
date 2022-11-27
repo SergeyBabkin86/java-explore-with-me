@@ -1,6 +1,7 @@
 package ru.practicum.main.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,9 +38,9 @@ public class AdminController {
     private final CompilationService compilationService;
 
     @GetMapping("/events")
-    public Collection<EventFullDto> getEvents(@RequestParam(required = false) Long[] users,
-                                              @RequestParam(required = false) String[] states,
-                                              @RequestParam(required = false) Long[] categories,
+    public Collection<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
+                                              @RequestParam(required = false) List<String> states,
+                                              @RequestParam(required = false) List<Long> categories,
                                               @RequestParam(required = false)
                                               @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                               LocalDateTime rangeStart,
@@ -53,7 +54,7 @@ public class AdminController {
                 states,
                 categories,
                 rangeStart,
-                rangeEnd), from, size);
+                rangeEnd), PageRequest.of(from / size, size));
     }
 
     @PutMapping(value = "/events/{eventId}")
@@ -91,7 +92,7 @@ public class AdminController {
     public Collection<UserDto> getUsersById(@RequestParam List<Long> ids,
                                             @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                             @RequestParam(defaultValue = "10") @Positive int size) {
-        return userService.getUsersById(ids, from, size);
+        return userService.getUsersByIds(ids, PageRequest.of(from / size, size));
     }
 
     @PostMapping(value = "/users")

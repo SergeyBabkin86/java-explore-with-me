@@ -42,7 +42,7 @@ public class RequestServiceImpl implements RequestService {
         checkUserExists(userId, userRepository);
         checkEventExists(eventId, eventRepository);
 
-        if (eventRepository.findByIdAndInitiatorId(eventId, userId) == null) {
+        if (eventRepository.findByInitiatorIdAndId(userId, eventId) == null) {
             throw new RuntimeException(format("Event with id=%s was not created by user with id=%s. " +
                     "It is impossible to get the participation requests in someone else's event.", eventId, userId));
         }
@@ -78,7 +78,7 @@ public class RequestServiceImpl implements RequestService {
         var event = checkEventExists(eventId, eventRepository);
         var request = checkRequestExists(requestId, requestRepository);
 
-        if (eventRepository.findByIdAndInitiatorId(eventId, userId) == null) {
+        if (eventRepository.findByInitiatorIdAndId(userId, eventId) == null) {
             throw new EntityNotFoundException(format("Event with id=%s was not created by user with id=%s. " +
                     "It is impossible to confirm the participation request in someone else's event.", eventId, userId));
         }
@@ -94,9 +94,9 @@ public class RequestServiceImpl implements RequestService {
         eventRepository.save(event);
 
         if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
-            requestRepository.findAllByEventId(eventId).forEach(pr -> {
-                pr.setStatus(RequestStatus.REJECTED);
-                requestRepository.save(pr);
+            requestRepository.findAllByEventId(eventId).forEach(participationRequest -> {
+                participationRequest.setStatus(RequestStatus.REJECTED);
+                requestRepository.save(participationRequest);
             });
         }
 

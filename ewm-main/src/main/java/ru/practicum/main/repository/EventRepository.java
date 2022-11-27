@@ -9,11 +9,11 @@ import java.util.Collection;
 
 public interface EventRepository extends JpaRepository<Event, Long>, QuerydslPredicateExecutor<Event> {
 
-    int countAllByCategory_Id(Long categoryId);
+    int countAllByCategoryId(Long categoryId);
 
     Collection<Event> findAllByInitiatorId(Long userId, PageRequest pageRequest);
 
-    Event findByIdAndInitiatorId(Long eventId, Long initiatorId);
+    Event findByInitiatorIdAndId(Long initiatorId, Long eventId);
 
     Collection<Event> findAllByIdIn(Iterable<Long> ids);
 }

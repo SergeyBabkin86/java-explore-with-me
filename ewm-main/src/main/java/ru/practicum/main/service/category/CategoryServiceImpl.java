@@ -47,8 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(Long categoryId) {
-        checkCategoryExists(categoryId, categoryRepository);
-        var categoryCount = eventRepository.countAllByCategory_Id(categoryId);
+        var categoryCount = eventRepository.countAllByCategoryId(categoryId);
         if (categoryCount != 0) {
             throw new RuntimeException(format("Deleting the category with id=%s is prohibited (used in %s event(s)).",
                     categoryId,
@@ -58,10 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Collection<CategoryDto> findAll(int from, int size) {
-        var page = from / size;
-        var pageRequest = PageRequest.of(page, size);
-
+    public Collection<CategoryDto> findAll(PageRequest pageRequest) {
         return categoryRepository.findAll(pageRequest).stream()
                 .map(CategoryMapper::toCategoryDto)
                 .collect(Collectors.toList());

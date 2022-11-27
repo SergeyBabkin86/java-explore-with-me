@@ -27,26 +27,26 @@ public class StatServiceImpl implements StatService {
 
     @Override
     public List<ViewStats> getEndpointHits(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        List<StatRepository.ViewStatsDto> viewStatsDtos;
 
-        List<Object[]> objects;
         if (unique) {
-            objects = statRepository.getEndpointHitsUnique(start, end, uris);
-
+            viewStatsDtos = statRepository.getEndpointHitsUnique(start, end, uris);
         } else {
-            objects = statRepository.getEndpointHitsNotUnique(start, end, uris);
+            viewStatsDtos = statRepository.getEndpointHitsNotUnique(start, end, uris);
         }
-        List<ViewStats> viewStatDtos = new ArrayList<>();
 
-        if (!objects.isEmpty()) {
-            for (Object[] object : objects) {
-                var viewStatsDto = ViewStats.builder()
-                        .app(object[0].toString())
-                        .uri(object[1].toString())
-                        .hits(Integer.valueOf(object[2].toString()))
+        List<ViewStats> viewStats = new ArrayList<>();
+
+        if (!viewStatsDtos.isEmpty()) {
+            for (StatRepository.ViewStatsDto viewStatsDto : viewStatsDtos) {
+                var viewStat = ViewStats.builder()
+                        .app(viewStatsDto.getApp())
+                        .uri(viewStatsDto.getUri())
+                        .hits(viewStatsDto.getHits())
                         .build();
-                viewStatDtos.add(viewStatsDto);
+                viewStats.add(viewStat);
             }
         }
-        return viewStatDtos;
+        return viewStats;
     }
 }

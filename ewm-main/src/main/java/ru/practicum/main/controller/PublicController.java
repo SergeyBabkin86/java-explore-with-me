@@ -1,6 +1,7 @@
 package ru.practicum.main.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,14 +31,12 @@ import java.util.Collection;
 public class PublicController {
 
     private final CategoryService categoryService;
-
     private final EventService eventService;
-
     private final CompilationService compilationService;
 
     @GetMapping("/events")
     public Collection<EventShortDto> getEvents(@RequestParam String text,
-                                               @RequestParam Long[] categories,
+                                               @RequestParam List<Long> categories,
                                                @RequestParam Boolean paid,
                                                @RequestParam(required = false)
                                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -48,7 +48,7 @@ public class PublicController {
                                                @RequestParam(required = false) String sort,
                                                @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                @RequestParam(defaultValue = "10") @Positive int size,
-                                               HttpServletRequest request) {
+                                               HttpServletRequest servletRequest) {
 
         return eventService.getEvents(GetEventRequest.of(text,
                 categories,
@@ -56,7 +56,7 @@ public class PublicController {
                 rangeStart,
                 rangeEnd,
                 onlyAvailable,
-                sort), from, size, request);
+                sort), PageRequest.of(from / size, size), servletRequest);
     }
 
     @GetMapping("/events/{eventId}")
@@ -68,7 +68,7 @@ public class PublicController {
     public Collection<CompilationDto> findAllCompilations(@RequestParam(required = false) boolean pinned,
                                                           @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                           @RequestParam(defaultValue = "10") @Positive int size) {
-        return compilationService.findAll(pinned, from, size);
+        return compilationService.findAll(pinned, PageRequest.of(from / size, size));
     }
 
     @GetMapping(value = "/compilations/{compId}")
@@ -81,13 +81,12 @@ public class PublicController {
     @GetMapping("/categories")
     public Collection<CategoryDto> findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                            @RequestParam(defaultValue = "10") @Positive int size) {
-        return categoryService.findAll(from, size);
+        return categoryService.findAll(PageRequest.of(from / size, size));
     }
 
     @GetMapping(value = "/categories/{categoryId}")
     public CategoryDto findById(@PathVariable
-                                    @Positive(message = "Category id should be equal or above 1.") long categoryId) {
+                                @Positive(message = "Category id should be equal or above 1.") long categoryId) {
         return categoryService.findById(categoryId);
     }
-
 }

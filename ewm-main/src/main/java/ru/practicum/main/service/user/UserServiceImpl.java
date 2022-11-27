@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 import static ru.practicum.main.mapper.UserMapper.toUser;
 import static ru.practicum.main.mapper.UserMapper.toUserDto;
-import static ru.practicum.main.utilities.Checker.checkUserExists;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteById(Long userId) {
-        checkUserExists(userId, userRepository);
         userRepository.deleteById(userId);
     }
 
     @Override
-    public Collection<UserDto> getUsersById(List<Long> ids, int from, int size) {
-        var pageRequest = PageRequest.of(from / size, size);
-
+    public Collection<UserDto> getUsersByIds(List<Long> ids, PageRequest pageRequest) {
         if (ids.isEmpty()) {
             return userRepository.findAll(pageRequest).stream()
                     .map(UserMapper::toUserDto)

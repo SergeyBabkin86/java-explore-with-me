@@ -4,15 +4,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 public class GetEventRequest {
 
     private String text;
-    private Long[] users;
-    private String[] states;
-    private Long[] categories;
+    private List<Long> users;
+    private List<String> states;
+    private List<Long> categories;
     private Boolean paid;
     private LocalDateTime rangeStart;
     private LocalDateTime rangeEnd;
@@ -20,7 +21,7 @@ public class GetEventRequest {
     private Sort sort;
 
     public static GetEventRequest of(String text,
-                                     Long[] categories,
+                                     List<Long> categories,
                                      Boolean paid,
                                      LocalDateTime rangeStart,
                                      LocalDateTime rangeEnd,
@@ -41,9 +42,9 @@ public class GetEventRequest {
         return request;
     }
 
-    public static GetEventRequest of(Long[] users,
-                                     String[] states,
-                                     Long[] categories,
+    public static GetEventRequest of(List<Long> users,
+                                     List<String> states,
+                                     List<Long> categories,
                                      LocalDateTime rangeStart,
                                      LocalDateTime rangeEnd) {
         GetEventRequest request = new GetEventRequest();

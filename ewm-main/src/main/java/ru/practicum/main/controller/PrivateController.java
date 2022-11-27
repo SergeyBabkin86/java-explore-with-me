@@ -1,6 +1,7 @@
 package ru.practicum.main.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.model.event.dto.EventFullDto;
@@ -29,7 +30,7 @@ public class PrivateController {
     public Collection<EventShortDto> findAllEvensCreatedByUser(@PathVariable @Positive long userId,
                                                                @RequestParam(defaultValue = "0") @PositiveOrZero int from,
                                                                @RequestParam(defaultValue = "10") @Positive int size) {
-        return eventService.findAllCreatedByUser(userId, from, size);
+        return eventService.findAllCreatedByUser(userId, PageRequest.of(from / size, size));
     }
 
     @PatchMapping(value = "/events")
@@ -45,9 +46,9 @@ public class PrivateController {
     }
 
     @GetMapping(value = "/events/{eventId}")
-    public EventFullDto findEvenByIdAddedByInitiator(@PathVariable @Positive long userId,
-                                                     @PathVariable @Positive long eventId) {
-        return eventService.findByIdAndInitiatorId(userId, eventId);
+    public EventFullDto findByInitiatorIdAndEventId(@PathVariable @Positive long userId,
+                                                    @PathVariable @Positive long eventId) {
+        return eventService.findByInitiatorIdAndEventId(userId, eventId);
     }
 
     @PatchMapping(value = "/events/{eventId}")
@@ -56,7 +57,6 @@ public class PrivateController {
         return eventService.cancelByInitiator(userId, eventId);
     }
 
-    //TODO: не работает
     @GetMapping(value = "/events/{eventId}/requests")
     public Collection<ParticipationRequestDto> findRequestByUserAndEventId(@PathVariable @Positive long userId,
                                                                            @PathVariable @Positive long eventId) {

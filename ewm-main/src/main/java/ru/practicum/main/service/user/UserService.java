@@ -1,5 +1,6 @@
 package ru.practicum.main.service.user;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.main.model.user.dto.NewUserRequest;
 import ru.practicum.main.model.user.dto.UserDto;
 
@@ -12,5 +13,5 @@ public interface UserService {
 
     void deleteById(Long userId);
 
-    Collection<UserDto> getUsersById(List<Long> ids, int from, int size);
+    Collection<UserDto> getUsersByIds(List<Long> ids, PageRequest pageRequest);
 }

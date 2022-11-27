@@ -1,5 +1,6 @@
 package ru.practicum.main.service.category;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.main.model.category.dto.CategoryDto;
 import ru.practicum.main.model.category.dto.NewCategoryDto;
 
@@ -12,7 +13,7 @@ public interface CategoryService {
 
     void delete(Long categoryId);
 
-    Collection<CategoryDto> findAll(int from, int size);
+    Collection<CategoryDto> findAll(PageRequest pageRequest);
 
     CategoryDto findById(Long categoryId);
 }

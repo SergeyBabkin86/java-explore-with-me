@@ -37,24 +37,19 @@ import static ru.practicum.main.utilities.Constants.dateTimeFormat;
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
-    public static final String NAME_OF_APP = "ewm-main-service";
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final WebClient webClient;
-    private final QEvent event = QEvent.event;
 
 
     @Override
     public Collection<EventShortDto> getEvents(GetEventRequest eventRequest,
-                                               int from,
-                                               int size,
+                                               PageRequest pageRequest,
                                                HttpServletRequest servletRequest) {
 
-        var sort = makeSortOrder(eventRequest.getSort());
-        var pageRequest = PageRequest.of(from / size, size, sort);
-
         var finalCondition = getFinalConditions(eventRequest);
+        pageRequest.withSort(makeSortOrder(eventRequest.getSort()));
 
         addStat(servletRequest);
 
@@ -74,8 +69,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<EventShortDto> findAllCreatedByUser(Long userId, int from, int size) {
-        var pageRequest = PageRequest.of(from / size, size);
+    public Collection<EventShortDto> findAllCreatedByUser(Long userId, PageRequest pageRequest) {
         return eventRepository.findAllByInitiatorId(userId, pageRequest).stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
@@ -84,7 +78,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto updateByUser(Long userId, UpdateEventRequest updateEventRequest) {
         var eventId = updateEventRequest.getEventId();
-        var event = eventRepository.findByIdAndInitiatorId(eventId, userId);
+        var event = eventRepository.findByInitiatorIdAndId(userId, eventId);
         var eventDate = updateEventRequest.getEventDate();
 
         if (event == null) {
@@ -121,20 +115,19 @@ public class EventServiceImpl implements EventService {
     public EventFullDto save(Long userId, NewEventDto newEventDto) {
         checkEventDateTime(newEventDto.getEventDate(), Duration.ofHours(2));
 
-        var category = checkCategoryExists(newEventDto.getCategory(), categoryRepository);
         var user = checkUserExists(userId, userRepository);
+        var category = checkCategoryExists(newEventDto.getCategory(), categoryRepository);
         var event = eventRepository.save(EventMapper.toEvent(newEventDto, category, user));
 
         return toEventFullDto(event);
     }
 
     @Override
-    public EventFullDto findByIdAndInitiatorId(Long userId, Long eventId) {
-        var event = eventRepository.findByIdAndInitiatorId(eventId, userId);
+    public EventFullDto findByInitiatorIdAndEventId(Long userId, Long eventId) {
+        var event = eventRepository.findByInitiatorIdAndId(userId, eventId);
         if (event == null) {
             throw new EntityNotFoundException(format("Event with id=%s was not found.", eventId));
         }
-
         return toEventFullDto(event);
     }
 
@@ -155,11 +148,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public Collection<EventFullDto> findAllByAdmin(GetEventRequest request, int from, int size) {
-        var finalCondition = getFinalConditions(request);
-        var pageRequest = PageRequest.of(from / size, size);
-
-        return toEventFullDto(eventRepository.findAll(finalCondition, pageRequest));
+    public Collection<EventFullDto> findAllByAdmin(GetEventRequest request, PageRequest pageRequest) {
+        return toEventFullDto(eventRepository.findAll(getFinalConditions(request), pageRequest));
     }
 
     @Override
@@ -233,6 +223,7 @@ public class EventServiceImpl implements EventService {
     }
 
     private BooleanExpression getFinalConditions(GetEventRequest eventRequest) {
+        var event = QEvent.event;
         var conditions = new ArrayList<BooleanExpression>();
 
         if (eventRequest.getText() != null) {
@@ -271,10 +262,11 @@ public class EventServiceImpl implements EventService {
                 conditions.add(event.confirmedRequests.ne(event.participantLimit));
             }
         }
-
+        if (conditions.isEmpty()) {
+            throw new RuntimeException("No one conditions were set");
+        }
         return conditions.stream()
-                .reduce(BooleanExpression::and)
-                .get();
+                .reduce(BooleanExpression::and).get();
     }
 
     private Sort makeSortOrder(GetEventRequest.Sort sort) {
@@ -290,7 +282,7 @@ public class EventServiceImpl implements EventService {
 
     private void addStat(HttpServletRequest servletRequest) {
         var statDto = StatDto.builder()
-                .app(NAME_OF_APP)
+                .app("ewm-main-service")
                 .ip(servletRequest.getRemoteAddr())
                 .uri(servletRequest.getRequestURI())
                 .timestamp(LocalDateTime.now())

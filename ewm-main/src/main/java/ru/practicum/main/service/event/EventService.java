@@ -1,5 +1,6 @@
 package ru.practicum.main.service.event;
 
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.main.model.event.dto.*;
 import ru.practicum.main.utilities.GetEventRequest;
 
@@ -8,23 +9,22 @@ import java.util.Collection;
 
 public interface EventService {
     Collection<EventShortDto> getEvents(GetEventRequest request,
-                                        int from,
-                                        int size,
+                                        PageRequest pageRequest,
                                         HttpServletRequest servletRequest);
 
     EventFullDto getEventById(Long eventId, HttpServletRequest servletRequest);
 
-    Collection<EventShortDto> findAllCreatedByUser(Long userId, int from, int size);
+    Collection<EventShortDto> findAllCreatedByUser(Long userId, PageRequest pageRequest);
 
     EventFullDto updateByUser(Long userId, UpdateEventRequest updateEventRequest);
 
     EventFullDto save(Long userId, NewEventDto newEventDto);
 
-    EventFullDto findByIdAndInitiatorId(Long userId, Long eventId);
+    EventFullDto findByInitiatorIdAndEventId(Long userId, Long eventId);
 
     EventFullDto cancelByInitiator(Long userId, Long eventId);
 
-    Collection<EventFullDto> findAllByAdmin(GetEventRequest request, int from, int size);
+    Collection<EventFullDto> findAllByAdmin(GetEventRequest request, PageRequest pageRequest);
 
     EventFullDto updateByAdmin(Long eventId, AdminUpdateEventRequest request);
 

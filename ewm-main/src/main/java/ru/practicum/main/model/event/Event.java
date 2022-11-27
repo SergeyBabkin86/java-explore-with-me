@@ -8,7 +8,7 @@ import ru.practicum.main.model.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -77,6 +77,6 @@ public class Event {
 
     @ManyToMany(mappedBy = "events")
     @ToString.Exclude
-    private Collection<Compilation> compilations;
+    private Set<Compilation> compilations;
 
 }

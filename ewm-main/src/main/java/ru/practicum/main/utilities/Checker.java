@@ -19,12 +19,14 @@ public class Checker {
 
     public static User checkUserExists(Long userId, UserRepository rep) {
         return rep.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(format("User with id=%s was not found.", userId)));
+                .orElseThrow(() -> new EntityNotFoundException(format("User with id=%s was not found.",
+                        userId)));
     }
 
     public static Event checkEventExists(Long eventId, EventRepository rep) {
         return rep.findById(eventId)
-                .orElseThrow(() -> new EntityNotFoundException(format("Event with id=%s was not found.", eventId)));
+                .orElseThrow(() -> new EntityNotFoundException(format("Event with id=%s was not found.",
+                        eventId)));
     }
 
     public static ParticipationRequest checkRequestExists(Long requestId, RequestRepository rep) {
