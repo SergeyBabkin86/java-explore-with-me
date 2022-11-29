@@ -63,7 +63,7 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException(format("Event with id=%s is not published and can not be shown.", eventId));
         }
         addStat(servletRequest);
-        event.setViews(getViewsFromStat(servletRequest, event.getCreatedOn(), event.getViews()));
+        event.setViews(getViewsFromStat(servletRequest, event.getCreatedOn(), event.getEventDate()));
 
         return toEventFullDto(eventRepository.save(event));
     }
@@ -292,17 +292,18 @@ public class EventServiceImpl implements EventService {
         webClient.post()
                 .uri("/hit")
                 .body(Mono.just(statDto), StatDto.class)
-                .exchangeToMono(rs -> Mono.just(rs.mutate()))
+                .retrieve()
+                .toBodilessEntity()
                 .block();
     }
 
-    private Integer getViewsFromStat(HttpServletRequest servletRequest, LocalDateTime createdOn, Integer views) {
+    private Integer getViewsFromStat(HttpServletRequest servletRequest, LocalDateTime start, LocalDateTime end) {
         var response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/stats")
-                        .queryParam("start", createdOn.format(dateTimeFormat()))
-                        .queryParam("end", LocalDateTime.now().format(dateTimeFormat()))
+                        .queryParam("start", start.format(dateTimeFormat()))
+                        .queryParam("end", end.format(dateTimeFormat()))
                         .queryParam("uris", servletRequest.getRequestURI())
                         .queryParam("unique", true)
                         .build())
@@ -311,7 +312,7 @@ public class EventServiceImpl implements EventService {
                 .collectList()
                 .block();
 
-        Integer hits = views;
+        Integer hits = null;
         if (response != null && !response.isEmpty()) {
             for (ViewStatDto vsd : response) {
                 if (vsd.getHits() != null) {

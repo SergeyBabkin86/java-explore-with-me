@@ -16,7 +16,7 @@ public interface StatRepository extends JpaRepository<EndpointHit, Long> {
                                              @Param("end") LocalDateTime end,
                                              @Param("uris") List<String> uris);
 
-    @Query("SELECT eh.app as app, eh.uri as uri, COUNT(eh.ip) AS hits FROM EndpointHit AS eh" +
+    @Query(value = "SELECT eh.app as app, eh.uri as uri, COUNT(eh.ip) AS hits FROM EndpointHit AS eh" +
             " WHERE eh.uri IN (:uris) AND eh.timestamp BETWEEN :start AND :end GROUP BY eh.app, eh.uri")
     List<ViewStatsDto> getEndpointHitsNotUnique(@Param("start") LocalDateTime start,
                                                 @Param("end") LocalDateTime endFormatted,
