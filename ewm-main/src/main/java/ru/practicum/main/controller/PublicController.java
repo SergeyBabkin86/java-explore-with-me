@@ -35,9 +35,9 @@ public class PublicController {
     private final CompilationService compilationService;
 
     @GetMapping("/events")
-    public Collection<EventShortDto> getEvents(@RequestParam String text,
-                                               @RequestParam List<Long> categories,
-                                               @RequestParam Boolean paid,
+    public Collection<EventShortDto> getEvents(@RequestParam(required = false) String text,
+                                               @RequestParam(required = false) List<Long> categories,
+                                               @RequestParam(required = false) Boolean paid,
                                                @RequestParam(required = false)
                                                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
                                                LocalDateTime rangeStart,
