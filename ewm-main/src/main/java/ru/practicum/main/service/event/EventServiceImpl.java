@@ -256,17 +256,18 @@ public class EventServiceImpl implements EventService {
                 conditions.add(event.eventDate.before(eventRequest.getRangeEnd()));
             }
         }
-
         if (eventRequest.getOnlyAvailable() != null) {
             if (eventRequest.getOnlyAvailable()) {
                 conditions.add(event.confirmedRequests.ne(event.participantLimit));
             }
         }
         if (conditions.isEmpty()) {
-            throw new RuntimeException("No one conditions were set");
+            conditions.add(event.id.isNotNull());
         }
+
         return conditions.stream()
-                .reduce(BooleanExpression::and).get();
+                .reduce(BooleanExpression::and)
+                .get();
     }
 
     private Sort makeSortOrder(GetEventRequest.Sort sort) {
