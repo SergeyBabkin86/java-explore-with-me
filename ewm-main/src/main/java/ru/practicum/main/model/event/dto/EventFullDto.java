@@ -1,10 +1,11 @@
 package ru.practicum.main.model.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
+import lombok.Builder;
+import lombok.Value;
 import ru.practicum.main.model.category.Category;
 import ru.practicum.main.model.event.EventState;
-import ru.practicum.main.model.event.Location;
+import ru.practicum.main.model.location.dto.LocationShortDto;
 import ru.practicum.main.model.user.dto.UserShortDto;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,7 @@ public class EventFullDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
 
-    Location location;
+    LocationShortDto location;
 
     Boolean paid;
 

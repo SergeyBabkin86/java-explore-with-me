@@ -2,6 +2,7 @@ package ru.practicum.main.service.event;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.main.model.event.dto.*;
+import ru.practicum.main.utilities.GetCoordinateParam;
 import ru.practicum.main.utilities.GetEventRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ public interface EventService {
 
     EventFullDto updateByUser(Long userId, UpdateEventRequest updateEventRequest);
 
-    EventFullDto save(Long userId, NewEventDto newEventDto);
+    EventFullDto save(Long userId, NewEventDto newEventDto, Long locationId);
 
     EventFullDto findByInitiatorIdAndEventId(Long userId, Long eventId);
 
@@ -31,4 +32,6 @@ public interface EventService {
     EventFullDto publish(Long eventId);
 
     EventFullDto reject(Long eventId);
+
+    Collection<EventShortDto> findInArea(GetCoordinateParam coordinateParam, PageRequest pageRequest);
 }

@@ -11,13 +11,15 @@ import ru.practicum.main.model.compilation.dto.CompilationDto;
 import ru.practicum.main.model.compilation.dto.NewCompilationDto;
 import ru.practicum.main.model.event.dto.AdminUpdateEventRequest;
 import ru.practicum.main.model.event.dto.EventFullDto;
-import ru.practicum.main.utilities.GetEventRequest;
+import ru.practicum.main.model.location.dto.LocationDto;
 import ru.practicum.main.model.user.dto.NewUserRequest;
 import ru.practicum.main.model.user.dto.UserDto;
 import ru.practicum.main.service.category.CategoryService;
 import ru.practicum.main.service.compilation.CompilationService;
 import ru.practicum.main.service.event.EventService;
+import ru.practicum.main.service.location.LocationService;
 import ru.practicum.main.service.user.UserService;
+import ru.practicum.main.utilities.GetEventRequest;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -36,6 +38,7 @@ public class AdminController {
     private final UserService userService;
     private final EventService eventService;
     private final CompilationService compilationService;
+    private final LocationService locationService;
 
     @GetMapping("/events")
     public Collection<EventFullDto> getEvents(@RequestParam(required = false) List<Long> users,
@@ -135,5 +138,20 @@ public class AdminController {
     @PatchMapping(value = "/compilations/{compId}/pin")
     public void pinCompilation(@PathVariable @Positive(message = "Compilation id should be >= 1.") long compId) {
         compilationService.pinCompilation(compId);
+    }
+
+    @PostMapping(value = "/locations")
+    public LocationDto saveLocation(@Valid @RequestBody LocationDto locationDto) {
+        return locationService.save(locationDto);
+    }
+
+    @PatchMapping(value = "/locations")
+    public LocationDto updateLocation(@Valid @RequestBody LocationDto locationDto) {
+        return locationService.update(locationDto);
+    }
+
+    @DeleteMapping("/locations/{locationId}")
+    public void deleteLocation(@PathVariable @Positive(message = "Location id should be >= 1.") long locationId) {
+        locationService.delete(locationId);
     }
 }

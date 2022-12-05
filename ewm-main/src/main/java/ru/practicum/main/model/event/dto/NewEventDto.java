@@ -1,8 +1,10 @@
 package ru.practicum.main.model.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import ru.practicum.main.model.event.Location;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.Value;
+import ru.practicum.main.model.location.dto.LocationShortDto;
 
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -27,7 +29,7 @@ public class NewEventDto {
     LocalDateTime eventDate;
 
     @NotNull(message = "Location shouldn't be null.")
-    Location location;
+    LocationShortDto location;
 
     @NotNull(message = "Paid status shouldn't be null.")
     Boolean paid;

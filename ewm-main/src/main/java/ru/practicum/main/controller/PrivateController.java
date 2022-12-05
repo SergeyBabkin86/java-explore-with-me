@@ -41,8 +41,9 @@ public class PrivateController {
 
     @PostMapping(value = "/events")
     public EventFullDto saveEvent(@PathVariable @Positive long userId,
+                                  @RequestParam(required = false) Long locationId,
                                   @Valid @RequestBody NewEventDto newEventDto) {
-        return eventService.save(userId, newEventDto);
+        return eventService.save(userId, newEventDto, locationId);
     }
 
     @GetMapping(value = "/events/{eventId}")

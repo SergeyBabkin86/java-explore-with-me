@@ -4,6 +4,7 @@ import ru.practicum.main.error.exceptions.EntityNotFoundException;
 import ru.practicum.main.model.category.Category;
 import ru.practicum.main.model.compilation.Compilation;
 import ru.practicum.main.model.event.Event;
+import ru.practicum.main.model.location.Location;
 import ru.practicum.main.model.request.ParticipationRequest;
 import ru.practicum.main.model.user.User;
 import ru.practicum.main.repository.*;
@@ -39,5 +40,11 @@ public class Checker {
         return compilationRepository.findById(compId)
                 .orElseThrow(() -> new EntityNotFoundException(format("Compilation with id=%s was not found.",
                         compId)));
+    }
+
+    public static Location checkLocationExists(Long locationId, LocationRepository locationRepository) {
+        return locationRepository.findById(locationId)
+                .orElseThrow(() -> new EntityNotFoundException(format("Location with id=%s was not found.",
+                        locationId)));
     }
 }

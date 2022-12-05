@@ -16,7 +16,9 @@ import ru.practicum.main.model.stat.StatDto;
 import ru.practicum.main.model.stat.ViewStatDto;
 import ru.practicum.main.repository.CategoryRepository;
 import ru.practicum.main.repository.EventRepository;
+import ru.practicum.main.repository.LocationRepository;
 import ru.practicum.main.repository.UserRepository;
+import ru.practicum.main.utilities.GetCoordinateParam;
 import ru.practicum.main.utilities.GetEventRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,8 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static ru.practicum.main.mapper.EventMapper.toEventFullDto;
-import static ru.practicum.main.mapper.EventMapper.toEventShortDto;
+import static ru.practicum.main.mapper.EventMapper.*;
 import static ru.practicum.main.utilities.Checker.*;
 import static ru.practicum.main.utilities.Constants.dateTimeFormat;
 
@@ -40,6 +41,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final LocationRepository locationRepository;
     private final WebClient webClient;
 
 
@@ -64,7 +66,6 @@ public class EventServiceImpl implements EventService {
         }
         addStat(servletRequest);
         event.setViews(getViewsFromStat(servletRequest, event.getCreatedOn(), event.getEventDate()));
-
         return toEventFullDto(eventRepository.save(event));
     }
 
@@ -107,19 +108,23 @@ public class EventServiceImpl implements EventService {
         }
 
         event.setState(EventState.PENDING);
-
         return toEventFullDto(event);
     }
 
     @Override
-    public EventFullDto save(Long userId, NewEventDto newEventDto) {
+    public EventFullDto save(Long userId, NewEventDto newEventDto, Long locationId) {
         checkEventDateTime(newEventDto.getEventDate(), Duration.ofHours(2));
 
         var user = checkUserExists(userId, userRepository);
         var category = checkCategoryExists(newEventDto.getCategory(), categoryRepository);
-        var event = eventRepository.save(EventMapper.toEvent(newEventDto, category, user));
+        var event = toEvent(newEventDto, category, user);
 
-        return toEventFullDto(event);
+        if (locationId != null) {
+            var location = checkLocationExists(locationId, locationRepository);
+            event.setLat(location.getLat());
+            event.setLon(location.getLon());
+        }
+        return toEventFullDto(eventRepository.save(event));
     }
 
     @Override
@@ -143,7 +148,6 @@ public class EventServiceImpl implements EventService {
             throw new RuntimeException(format("Only events with state=%s can be cancelled.", EventState.PENDING));
         }
         event.setState(EventState.CANCELED);
-
         return toEventFullDto(event);
     }
 
@@ -179,7 +183,6 @@ public class EventServiceImpl implements EventService {
                 event.setLon(updateEventRequest.getLocation().getLon());
             }
         }
-
         return toEventFullDto(event);
     }
 
@@ -261,10 +264,6 @@ public class EventServiceImpl implements EventService {
                 conditions.add(event.confirmedRequests.ne(event.participantLimit));
             }
         }
-        if (conditions.isEmpty()) {
-            conditions.add(event.id.isNotNull());
-        }
-
         return conditions.stream()
                 .reduce(BooleanExpression::and)
                 .get();
@@ -321,5 +320,15 @@ public class EventServiceImpl implements EventService {
             }
         }
         return hits;
+    }
+
+    @Override
+    public Collection<EventShortDto> findInArea(GetCoordinateParam coordinateParam, PageRequest pageRequest) {
+        var events = eventRepository.findInArea(
+                coordinateParam.getLat(),
+                coordinateParam.getLon(),
+                coordinateParam.getRadius()
+        );
+        return toEventShortDto(events);
     }
 }
