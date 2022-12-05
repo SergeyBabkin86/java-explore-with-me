@@ -11,7 +11,7 @@ import java.util.List;
 public interface StatRepository extends JpaRepository<EndpointHit, Long> {
 
     @Query(value = "SELECT eh.app as app, eh.uri as uri, COUNT(DISTINCT eh.ip) AS hits FROM EndpointHit AS eh " +
-            "WHERE eh.uri IN (:uris) AND eh.timestamp>:start AND eh.timestamp<:end  GROUP BY eh.app, eh.uri")
+            "WHERE eh.uri IN (:uris) AND eh.timestamp>:start AND eh.timestamp<:end GROUP BY eh.app, eh.uri")
     List<ViewStatsDto> getEndpointHitsUnique(@Param("start") LocalDateTime start,
                                              @Param("end") LocalDateTime end,
                                              @Param("uris") List<String> uris);

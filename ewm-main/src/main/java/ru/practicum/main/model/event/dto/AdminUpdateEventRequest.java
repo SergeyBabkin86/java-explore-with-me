@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-import ru.practicum.main.model.event.Location;
+import ru.practicum.main.model.location.dto.LocationShortDto;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +21,7 @@ public class AdminUpdateEventRequest {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
 
-    Location location;
+    LocationShortDto location;
 
     Boolean paid;
 

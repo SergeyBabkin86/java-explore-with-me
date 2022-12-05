@@ -3,10 +3,10 @@ package ru.practicum.main.mapper;
 import ru.practicum.main.model.category.Category;
 import ru.practicum.main.model.event.Event;
 import ru.practicum.main.model.event.EventState;
-import ru.practicum.main.model.event.Location;
 import ru.practicum.main.model.event.dto.EventFullDto;
 import ru.practicum.main.model.event.dto.EventShortDto;
 import ru.practicum.main.model.event.dto.NewEventDto;
+import ru.practicum.main.model.location.dto.LocationShortDto;
 import ru.practicum.main.model.user.User;
 
 import java.time.LocalDateTime;
@@ -45,7 +45,7 @@ public class EventMapper {
                 .category(event.getCategory())
                 .description(event.getDescription())
                 .eventDate(event.getEventDate())
-                .location(Location.builder()
+                .location(LocationShortDto.builder()
                         .lat(event.getLat())
                         .lon(event.getLon())
                         .build())
